@@ -5,7 +5,7 @@ const LinkSchema = new mongoose.Schema({
   url: { type: String, required: true },
   clicks: { type: Number, default: 0 },
   lastClicked: { type: Date, default: null }
-});
+}, { timestamps: true });
 
 const Link = mongoose.model("Link", LinkSchema);
 export default Link;

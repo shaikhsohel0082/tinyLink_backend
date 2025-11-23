@@ -36,9 +36,35 @@ export const createLink = async (req, res) => {
 
 // GET /api/links
 export const getAllLinks = async (req, res) => {
-  const data = await Link.find().sort({ createdAt: -1 });
-  res.json(data);
+  try {
+    let page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 5;
+
+    const skip = (page - 1) * limit;
+
+    const totalLinks = await Link.countDocuments();
+
+    const links = await Link.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+   
+
+    const totalPages = Math.ceil(totalLinks / limit);
+
+    res.json({
+      links,
+      totalPages,
+      currentPage: page,
+      limit
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
+  }
 };
+
 
 // GET /api/links/:code
 export const getSingleLink = async (req, res) => {
