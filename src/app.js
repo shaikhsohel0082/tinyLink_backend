@@ -20,13 +20,14 @@ app.get("/healthz", (req, res) => {
 // API routes
 app.use("/api/links", linkRoutes);
 
+app.get("/favicon.ico", (req, res) => res.status(204).end());
+
 // Redirect route
 app.get("/:code", async (req, res) => {
   const { code } = req.params;
 
   const link = await Link.findOne({ code });
   if (!link) return res.status(404).json({ message: "Not found" });
-
   link.clicks++;
   link.lastClicked = new Date();
   await link.save();
