@@ -25,6 +25,10 @@ app.get("/favicon.ico", (req, res) => res.status(204).end());
 // Redirect route
 app.get("/:code", async (req, res) => {
   const { code } = req.params;
+  // Ignore bots like Render health check, curl, GoogleBot, etc.
+  if (/render|healthcheck|bot|crawl|spider/i.test(ua)) {
+    return res.redirect(302, link.url);
+  }
 
   const link = await Link.findOne({ code });
   if (!link) return res.status(404).json({ message: "Not found" });
